@@ -10,7 +10,7 @@ public class Habit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotBlank // input check, cannot be left blank 
     private String name;
 
     private String description;
@@ -22,6 +22,8 @@ public class Habit {
         this.name = name;
         this.description = description;
     }
+
+    // getters and setters
     public String getFrequency() { return frequency; }
     public void setFrequency(String frequency) { this.frequency = frequency; }
     public Long getId() { return id; }
