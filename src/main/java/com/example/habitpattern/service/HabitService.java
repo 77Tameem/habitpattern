@@ -17,7 +17,7 @@ public class HabitService {
 
     public HabitService(HabitRepository habitRepository, CheckInRepository checkInRepository) {
         this.habitRepository = habitRepository;
-        this.checkInRepository = checkInRepository;
+        this.checkInRepository = checkInRepository; 
     }
 
     public List<Habit> getAll() {
@@ -29,20 +29,21 @@ public class HabitService {
     }
 
     public CheckIn checkIn(Long habitId) {
-        Habit habit = habitRepository.findById(habitId)
+        Habit habit = habitRepository.findById(habitId) 
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Habit not found"));
+                //result if habit is not found
 
         LocalDate today = LocalDate.now();
         if (checkInRepository.existsByHabitIdAndDate(habitId, today)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Already checked in today");
-        }
+        }      //result if within the day someone has already checked in 
         return checkInRepository.save(new CheckIn(habit, today));
     }
 
     public int getCurrentStreak(Long habitId) {
         if (!habitRepository.existsById(habitId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Habit not found");
-        }
+        }     //result if search is unable to find target 
         List<LocalDate> dates = checkInRepository.findByHabitIdOrderByDateDesc(habitId)
                 .stream()
                 .map(CheckIn::getDate)
@@ -52,7 +53,7 @@ public class HabitService {
 
  static int calculateStreak(List<LocalDate> datesNewestFirst, LocalDate today) {
         if (datesNewestFirst.isEmpty()) {
-            return 0;
+            return 0; // if theres no check ins at all
         }
 
         LocalDate newest = datesNewestFirst.get(0);
@@ -63,7 +64,7 @@ public class HabitService {
         } else if (newest.equals(today.minusDays(1))) {
             expected = today.minusDays(1);
         } else {
-            return 0;
+            return 0; //checks whether the streak still exists, or is in a live state, therefore can be increased
         }
 
         int streak = 0;
@@ -71,8 +72,9 @@ public class HabitService {
             if (date.equals(expected)) {
                 streak++;
                 expected = expected.minusDays(1);
-            } else {
+            } else { 
                 break;
+                //checks if the check in date is correct and the expected date by the algorithm
             }
         }
         return streak;
