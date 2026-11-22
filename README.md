@@ -39,4 +39,5 @@ Creating a habit
 ![Not found error](docs/error.png)
 
 ## Notes
-Built in 2 days as a learning project.
+Built in 2 days as a learning project 
+Made By Tameem Husayn
